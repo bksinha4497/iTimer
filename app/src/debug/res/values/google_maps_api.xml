@@ -1,0 +1,27 @@
+<resources>
+    <!--
+    TODO: Before you run your application, you need a Google Maps API key.
+
+    To get one, follow this link, follow the directions and press "Create" at the end:
+
+    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=27:29:AF:60:2F:DB:1C:9D:F6:D5:E5:F9:8A:E2:C6:74:47:28:A8:EC%3Bcom.example.ankit.locationmonitor
+
+    You can also add your credentials to an existing key, using these values:
+
+    Package name:
+    27:29:AF:60:2F:DB:1C:9D:F6:D5:E5:F9:8A:E2:C6:74:47:28:A8:EC
+
+    SHA-1 certificate fingerprint:
+    27:29:AF:60:2F:DB:1C:9D:F6:D5:E5:F9:8A:E2:C6:74:47:28:A8:EC
+
+    Alternatively, follow the directions here:
+    https://developers.google.com/maps/documentation/android/start#get-key
+
+    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
+    string in this file.
+    -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyA3QFrNRCpejt4MykxytJHnJrULgrRNtWw
+
+    </string>
+
+</resources>

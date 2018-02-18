@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">LocationMonitor</string>
+    <string name="startservice">StartService</string>
+    <string name="stopservice">StopService</string>
+    <string name="coordinates">Coordinates</string>
+    <string name="start">start</string>
+    <string name="stop">stop</string>
+    <string name="view">View</string>
+    <string name="id">id</string>
+    <string name="delete">delete</string>
+    <string name="normalized_data">Normalized_Data</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="show_on_map">Show_On_Map</string>
+    <string name="go">Go</string>
+    <string name="mark">Mark</string>
+    <string name="sat">Sat</string>
+    <string name="clear">Clear</string>
+    <string name="location">Location</string>
+
+</resources>
