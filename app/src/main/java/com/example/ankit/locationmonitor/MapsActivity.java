@@ -2,6 +2,8 @@ package com.example.ankit.locationmonitor;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -9,17 +11,24 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.ankit.locationmonitor.R.*;
 import static com.example.ankit.locationmonitor.R.id.*;
@@ -28,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static GoogleMap mMap;
     public final static int MY_PERMISSION_FINE_LOCATION = 101;
+    public Button mark;
     ZoomControls zoom;
     //MapsActivity myMaps;
 
@@ -160,5 +170,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
 
         }
+    }
+
+    public void goToLocationZoom(double lat,double lng,float zoom){
+        LatLng l1=new LatLng(lat,lng);
+        CameraUpdate update=CameraUpdateFactory.newLatLngZoom(l1,zoom);
+        mMap.moveCamera(update);
+    }
+    Marker marker;
+
+    public void geoLocate(View view) throws IOException {
+        EditText et=(EditText)findViewById(R.id.etLocationEntry);
+        String location=et.getText().toString();
+        Geocoder gc=new Geocoder(this);
+
+
+        List<Address> list=gc.getFromLocationName(location,1);
+        Address address=list.get(0);
+        final String locality=address.getLocality();
+        Toast.makeText(this,locality, Toast.LENGTH_LONG).show();
+        final double lat=address.getLatitude();
+        final double lng=address.getLongitude();
+        goToLocationZoom(lat,lng,15);
+
+        mark=(Button)findViewById(R.id.btMark);
+        mark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMarkers(locality,lat,lng);
+
+            }
+        });
+    }
+
+    public void setMarkers(String locality,double lat,double lng){
+        /*if(marker!=null){
+            marker.remove();
+        }*/
+        MarkerOptions options=new MarkerOptions().title(locality)
+                                                  .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                                                 .position(new LatLng(lat,lng)).snippet("new place");
+        marker=mMap.addMarker(options);
     }
 }
