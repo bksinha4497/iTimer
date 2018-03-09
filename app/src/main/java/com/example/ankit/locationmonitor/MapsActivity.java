@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,20 +35,57 @@ import java.util.List;
 import static com.example.ankit.locationmonitor.R.*;
 import static com.example.ankit.locationmonitor.R.id.*;
 
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.json.JSONObject;
+
+import android.app.Dialog;
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.util.Log;
+import android.view.Menu;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static GoogleMap mMap;
     public final static int MY_PERMISSION_FINE_LOCATION = 101;
-    public Button mark;
+    public Button mark, clear;
     ZoomControls zoom;
-    //MapsActivity myMaps;
 
-    public MapsActivity(){
+    public MapsActivity() {
 
     }
 
     public MapsActivity(DatabaseHelper databaseHelper) {
-        //this.myMaps = myMaps;
+
 
     }
 
@@ -54,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
@@ -75,20 +114,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
+
+
+
     }
 
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
-    public  void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -96,14 +129,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+        if (mMap != null) {
+
+            mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDrag(Marker marker) {
+
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    Geocoder gc=new Geocoder(MapsActivity.this);
+                    LatLng l1=marker.getPosition();
+                    double lat=l1.latitude;
+                    double lng=l1.longitude;
+                    List<Address> list=null;
+                    try {
+                        list=gc.getFromLocation(lat,lng,1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Address add=list.get(0);
+                    marker.setTitle(add.getAddressLine(0));
+                    marker.showInfoWindow();
+
+                }
+            });
+
+
+
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+                    View v = getLayoutInflater().inflate(R.layout.info_window, null);
+                    TextView tvLocality = (TextView) v.findViewById(R.id.tv_locality);
+                    TextView tvSnippet = (TextView) v.findViewById(id.tv_snippet);
+                    LatLng l1 = marker.getPosition();
+                    tvLocality.setText(marker.getTitle());
+                    tvSnippet.setText(marker.getSnippet());
+
+                    return v;
+                }
+            });
+        }
+
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             mMap.setMyLocationEnabled(true);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -111,38 +193,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
+
         addMarkers();
+
     }
 
-    private void addMarkers(){
+    private void addMarkers() {
 
         //TODO Get all marker positions
 
-        DatabaseHelper db=new DatabaseHelper(this);
+        DatabaseHelper db = new DatabaseHelper(this);
         ArrayList<DatabaseHelper.MyObj> myObjs = db.normalizeData(this);
 
-        LatLng locations=null;
+        LatLng locations = null;
         /*for(DatabaseHelper.MyObj obj : myObjs){
             locations = new LatLng(obj.lat, obj.longt);
             mMap.addMarker(new MarkerOptions().position(locations).title(obj.address+" \n "+obj.time));
         }*/
 
 
-
-        for(int i=0;i<myObjs.size();i++){
-            locations=new LatLng(myObjs.get(i).lat,myObjs.get(i).longt);
+        for (int i = 0; i < myObjs.size(); i++) {
+            locations = new LatLng(myObjs.get(i).lat, myObjs.get(i).longt);
             mMap.addMarker(new MarkerOptions().position(locations).title(myObjs.get(i).address).snippet(myObjs.get(i).time));
         }
 
 
-
-        if(locations!=null)
+        if (locations != null)
             mMap.moveCamera(CameraUpdateFactory.newLatLng(locations));
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
     }
 
     @Override
@@ -153,18 +230,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
                         mMap.setMyLocationEnabled(true);
                     }
 
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"this app requires location permissions to be granted",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "this app requires location permissions to be granted", Toast.LENGTH_LONG).show();
                     finish();
                 }
                 break;
@@ -172,7 +242,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    public void goToLocationZoom(double lat,double lng,float zoom){
+
+
+    public void goToLocationZoom(double lat, double lng, float zoom) {
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
         LatLng l1=new LatLng(lat,lng);
         CameraUpdate update=CameraUpdateFactory.newLatLngZoom(l1,zoom);
         mMap.moveCamera(update);
@@ -187,11 +265,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Address> list=gc.getFromLocationName(location,1);
         Address address=list.get(0);
-        final String locality=address.getLocality();
+        //final String locality=address.getLocality();
+        final String locality=address.getAddressLine(0);
         Toast.makeText(this,locality, Toast.LENGTH_LONG).show();
         final double lat=address.getLatitude();
         final double lng=address.getLongitude();
+
         goToLocationZoom(lat,lng,15);
+
 
         mark=(Button)findViewById(R.id.btMark);
         mark.setOnClickListener(new View.OnClickListener() {
@@ -201,15 +282,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
+
+        clear=(Button)findViewById(id.btClear);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(marker!=null){
+                    marker.remove();
+                }
+            }
+        });
+
     }
 
     public void setMarkers(String locality,double lat,double lng){
-        /*if(marker!=null){
+        if(marker!=null){
             marker.remove();
-        }*/
+        }
+
         MarkerOptions options=new MarkerOptions().title(locality)
+                                                  .draggable(true)
                                                   .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                                                  //.icon(BitmapDescriptorFactory.fromResource(mipmap.ic_launcher))
                                                  .position(new LatLng(lat,lng)).snippet("new place");
-        marker=mMap.addMarker(options);
+        marker= mMap.addMarker(options);
+
+
     }
+
+
+
+
+
 }
