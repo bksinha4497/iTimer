@@ -24,6 +24,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -296,9 +298,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    Circle circle;
     public void setMarkers(String locality,double lat,double lng){
         if(marker!=null){
-            marker.remove();
+            removeEverything();
         }
 
         MarkerOptions options=new MarkerOptions().title(locality)
@@ -307,12 +310,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                   //.icon(BitmapDescriptorFactory.fromResource(mipmap.ic_launcher))
                                                  .position(new LatLng(lat,lng)).snippet("new place");
         marker= mMap.addMarker(options);
-
+        circle=drawCircle(new LatLng(lat,lng));
 
     }
 
+    private Circle drawCircle(LatLng latLng) {
+        CircleOptions options=new CircleOptions()
+                              .center(latLng)
+                              .radius(1000)
+                              .fillColor(0x33FF0000)
+                              .strokeColor(Color.BLUE)
+                              .strokeWidth(3);
 
+        return mMap.addCircle(options);
+    }
 
+    private void removeEverything(){
+        marker.remove();
+        marker=null;
+        circle.remove();
+        circle=null;
+
+    }
 
 
 }
