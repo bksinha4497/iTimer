@@ -53,7 +53,7 @@
         android:id="@+id/btSatellite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/zcZoom"
         android:layout_toStartOf="@+id/btMark"
         android:text="@string/sat" />
 
@@ -71,6 +71,14 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btMark"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/bt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/btClear"
+        android:text="Date" />
 
 
 </RelativeLayout>

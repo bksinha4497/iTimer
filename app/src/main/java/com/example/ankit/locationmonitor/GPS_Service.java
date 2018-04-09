@@ -96,10 +96,10 @@ public class GPS_Service extends Service {
         boolean isInserted=myDb.insertData(location.getLatitude(),location.getLongitude() ,dat,places);
 
         if(isInserted==true){
-            Toast.makeText(GPS_Service.this,"Data inserted",Toast.LENGTH_LONG).show();
+            Toast.makeText(GPS_Service.this,"Data inserted",Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(GPS_Service.this, "Data not inserted ", Toast.LENGTH_LONG).show();
+            Toast.makeText(GPS_Service.this, "Data not inserted ", Toast.LENGTH_SHORT).show();
         }
     }
 

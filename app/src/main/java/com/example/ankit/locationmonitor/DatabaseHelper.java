@@ -13,9 +13,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Date;
 
 /**
  * Created by ankit on 10-02-2018.
@@ -106,6 +111,8 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
         int m=1;
         String FirstTime="";
         SQLiteDatabase db=this.getWritableDatabase();
+        DateFormat df1 = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
+        DateFormat df2 = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
         Cursor res1=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
         Cursor res3=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
 
@@ -133,23 +140,59 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
             m++;
             Cursor res2=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
             int n=1,flag=1;
-            //int countLast=0;
+
+
             while(n<m){
                 n++;
-                res2.moveToNext();
+                res2.moveToNext();        //pointer will point to first row
                 Location startPoint=new Location("locationA");
                 startPoint.setLatitude(res2.getDouble(0));
                 startPoint.setLongitude(res2.getDouble(1));
 
-
                 Location endPoint=new Location("locationA");
                 endPoint.setLatitude(res3.getDouble(0));
                 endPoint.setLongitude(res3.getDouble(1));
+
                 double distance=startPoint.distanceTo(endPoint);
                 //Log.i("TAG","the distance in metres is "+distance);
-                if(distance<50){
+
+                /*long diff;
+                long elapsedDays;
+                try {
+                    Date date1 = df1.parse(res2.getString(2));
+                    Date date2 = df2.parse(res3.getString(2));
+                    long days=1000*60*60*24;
+                    diff = date2.getTime() - date1.getTime();
+                    elapsedDays = diff / days;
+                    if(distance<80){
+                        flag=0;
+                        if(elapsedDays>1){
+                            Log.i("TAG","the difference is  "+elapsedDays);
+
+                            avgLat=res3.getDouble(0);
+                            avgLong=res3.getDouble(1);
+                            FirstTime=res3.getString(2);
+                            buffer.append("LAT: "+avgLat+"\n");
+                            buffer.append("LONG: "+avgLong+"\n");
+                            buffer.append("FIRST_TIME: "+FirstTime+"\n");
+                            String s=LocationFinder(avgLat,avgLong, cont);
+                            buffer.append("Address: "+s+"\n");
+                            arrayList.add(new MyObj(avgLat, avgLong, s, FirstTime));
+                        }
+
+                        break;
+                    }
+
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }*/
+
+
+
+
+                if(distance<80){
                     flag=0;
-                    //countLast=1;
                     break;
                 }
 
@@ -226,10 +269,10 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
         SQLiteDatabase db=this.getWritableDatabase();
         Integer deletedRows=db.delete(TABLE_NAME,"ID=?",new String[] {id});
         if(deletedRows>0){
-            Toast.makeText(cont,"data deleted",Toast.LENGTH_LONG).show();
+            Toast.makeText(cont,"data deleted",Toast.LENGTH_SHORT).show();
         }
         else{
-            Toast.makeText(cont,"data not deleted",Toast.LENGTH_LONG).show();
+            Toast.makeText(cont,"data not deleted",Toast.LENGTH_SHORT).show();
         }
     }
 

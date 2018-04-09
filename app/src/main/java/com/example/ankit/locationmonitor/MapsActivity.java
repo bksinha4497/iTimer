@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static GoogleMap mMap;
     public final static int MY_PERMISSION_FINE_LOCATION = 101;
-    public Button mark, clear;
+    public Button mark, clear,Button ;
     ZoomControls zoom;
 
     public MapsActivity() {
