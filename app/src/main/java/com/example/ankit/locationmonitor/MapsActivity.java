@@ -1,6 +1,7 @@
 package com.example.ankit.locationmonitor;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.example.ankit.locationmonitor.R.*;
@@ -81,6 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public final static int MY_PERMISSION_FINE_LOCATION = 101;
     public Button mark, clear;
     public Button btn_date;
+    int year_x,month_x,day_x;
+    static final int Dialog_id=0;
     ZoomControls zoom;
 
     public MapsActivity() {
@@ -91,6 +96,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+    public void showDialogOnDateClick()
+    {
+        btn_date=(Button)findViewById(id.bt_date);
+        btn_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(Dialog_id);
+            }
+        });
+
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id)
+    {
+        if(id==Dialog_id)
+            return new DatePickerDialog(this,dpickerListner ,year_x,month_x,day_x);
+            return null;
+
+    }
+
+    private DatePickerDialog.OnDateSetListener dpickerListner=new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+            year_x=year;
+            month_x=monthOfYear+1;
+            day_x=dayOfMonth;
+            Toast.makeText(MapsActivity.this,day_x+"."+month_x+"."+year_x,Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +153,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-
+        final Calendar cal=Calendar.getInstance();
+        year_x=cal.get(Calendar.YEAR);
+        month_x=cal.get(Calendar.MONTH);
+        day_x=cal.get(Calendar.DAY_OF_MONTH);
+        Log.i("TAG","day of month "+day_x);
+        showDialogOnDateClick();
 
 
     }
