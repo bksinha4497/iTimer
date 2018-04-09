@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MiniProject.iml" filepath="$PROJECT_DIR$/MiniProject.iml" />
+      <module fileurl="file://F:\Desktop\android\AndroidProjects\Farmer\iTimer\MiniProject.iml" filepath="F:\Desktop\android\AndroidProjects\Farmer\iTimer\MiniProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://F:\Desktop\android\AndroidProjects\Farmer\iTimer\app\app.iml" filepath="F:\Desktop\android\AndroidProjects\Farmer\iTimer\app\app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iTimer.iml" filepath="$PROJECT_DIR$/iTimer.iml" />
     </modules>
   </component>
 </project>
