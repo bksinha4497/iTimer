@@ -18,6 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     //GPS_Service gs;
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         btn_normalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDb.normalizeData(MainActivity.this);
+                myDb.normalizeData(MainActivity.this, null);
             }
         });
     }
@@ -126,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i=new Intent(getApplicationContext(),GPS_Service.class);
                 startService(i);
-
             }
         });
 
@@ -163,5 +166,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static String getDate(){
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
+        String dat = df.format(Calendar.getInstance().getTime());
+        return dat;
+    }
 
 }

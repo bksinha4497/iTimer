@@ -18,8 +18,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
-
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,52 +29,15 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import static com.example.ankit.locationmonitor.R.*;
 import static com.example.ankit.locationmonitor.R.id.*;
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONObject;
-
 import android.app.Dialog;
 import android.graphics.Color;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.view.Menu;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
-
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -109,8 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected Dialog onCreateDialog(int id)
-    {
+    protected Dialog onCreateDialog(int id){
         if(id==Dialog_id)
             return new DatePickerDialog(this,dpickerListner ,year_x,month_x,day_x);
             return null;
@@ -120,14 +80,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatePickerDialog.OnDateSetListener dpickerListner=new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-            year_x=year;
-            month_x=monthOfYear+1;
-            day_x=dayOfMonth;
-            Toast.makeText(MapsActivity.this,day_x+"."+month_x+"."+year_x,Toast.LENGTH_SHORT).show();
+            year_x = year;
+            month_x = monthOfYear + 1;
+            day_x = dayOfMonth;
+            setDatedMarker();
         }
     };
-
+    private void setDatedMarker(){
+        String date = String.format("%02d", day_x)+"."+String.format("%02d", month_x)+"."+String.format("%04d", year_x);
+        Toast.makeText(MapsActivity.this,date,Toast.LENGTH_SHORT).show();
+        addMarkers(date);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,10 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         year_x=cal.get(Calendar.YEAR);
         month_x=cal.get(Calendar.MONTH);
         day_x=cal.get(Calendar.DAY_OF_MONTH);
-        Log.i("TAG","day of month "+day_x);
+        //Log.i("TAG","day of month "+day_x);
         showDialogOnDateClick();
-
-
     }
 
 
@@ -237,17 +198,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-
-        addMarkers();
+        final Calendar cal=Calendar.getInstance();
+        year_x=cal.get(Calendar.YEAR);
+        month_x=cal.get(Calendar.MONTH);
+        day_x=cal.get(Calendar.DAY_OF_MONTH);
+        setDatedMarker();
 
     }
 
-    private void addMarkers() {
+    private void addMarkers(String date) {
 
         //TODO Get all marker positions
+        mMap.clear();
 
         DatabaseHelper db = new DatabaseHelper(this);
-        ArrayList<DatabaseHelper.MyObj> myObjs = db.normalizeData(this);
+        ArrayList<DatabaseHelper.MyObj> myObjs = db.normalizeData(this, date);
 
         LatLng locations = null;
         /*for(DatabaseHelper.MyObj obj : myObjs){
@@ -258,7 +223,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for (int i = 0; i < myObjs.size(); i++) {
             locations = new LatLng(myObjs.get(i).lat, myObjs.get(i).longt);
-            mMap.addMarker(new MarkerOptions().position(locations).title(myObjs.get(i).address).snippet(myObjs.get(i).time));
+            mMap.addMarker(new MarkerOptions().position(locations).title(myObjs.get(i).address).snippet(myObjs.get(i).getTimeWithTotalTime()));
         }
 
 

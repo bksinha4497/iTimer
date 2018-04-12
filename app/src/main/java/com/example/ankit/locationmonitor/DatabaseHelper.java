@@ -53,16 +53,21 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
     }
 
 
-    public boolean insertData(double lat,double longi,String time,int places){
+    //SQLiteDatabase db1=this.getWritableDatabase();
+    //Cursor res7=db1.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
+    public boolean insertData(double lat,double longi,String time){
+
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues contentValues=new ContentValues();
-        double scale = Math.pow(10, places);
-        lat=Math.round(lat*scale)/scale;
-        longi=Math.round(longi*scale)/scale;
+//        double scale = Math.pow(10, places);
+//        lat=Math.round(lat*scale)/scale;
+//        longi=Math.round(longi*scale)/scale;
+
         contentValues.put(COL_2,lat);
         contentValues.put(COL_3,longi);
         contentValues.put(COL_4,time);
         long result=db.insert(TABLE_NAME,null,contentValues);
+
         if(result==-1){
             return false;
         }
@@ -94,124 +99,51 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
 
     class MyObj{
         public double lat, longt;
-        public String address, time;
+        public String address, time, time2;
         public MyObj(double l, double lo, String add, String t){
             lat=l;
             longt=lo;
             address=add;
             time=t;
         }
+        public void setLeaveTime(String time2){
+            this.time2=time2;
+        }
+        public String getTimeWithTotalTime(){
+            if(time2!=null)
+                return time +" to "+time2;
+            else
+                return time;
+        }
     }
 
-    public ArrayList<MyObj> normalizeData(Context cont){
+    public ArrayList<MyObj> normalizeData(Context cont, String date){
 
         ArrayList<MyObj> arrayList=new ArrayList<>();
 
-        double avgLat=0,avgLong=0;
-        int m=1;
-        String FirstTime="";
+
         SQLiteDatabase db=this.getWritableDatabase();
-        DateFormat df1 = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
-        DateFormat df2 = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
-        Cursor res1=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
-        Cursor res3=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
 
+        Cursor res=null;
+        if(date==null)
+            res=db.rawQuery("select * from "+TABLE_NAME,null);
+        else
+            res=db.rawQuery("select * from "+TABLE_NAME+" WHERE TIME LIKE '%"+date+"%'",null);
 
-        if(res1.getCount()==0){
-            showMessage("error","nothing found", cont);
-            return null;
+        if(res.getCount()==0){
+            showMessage("Error","Select Valid Date", cont);            return arrayList;
         }
-        res1.moveToPosition(0);
-
-        StringBuffer buffer=new StringBuffer();
-        avgLat=res1.getDouble(0);
-        avgLong=res1.getDouble(1);
-        FirstTime=res1.getString(2);
-        buffer.append("LAT: "+avgLat+"\n");
-        buffer.append("LONG: "+avgLong+"\n");
-        buffer.append("FIRST_TIME: "+FirstTime+"\n");
-        String s1=LocationFinder(avgLat,avgLong, cont);
-        buffer.append("Address: "+s1+"\n");
-        arrayList.add(new MyObj(avgLat, avgLong, s1, FirstTime));
-
-        res3.moveToPosition(0);
-
-        while(res3.moveToNext()){
-            m++;
-            Cursor res2=db.rawQuery("select LAT,LONG,TIME from "+TABLE_NAME,null);
-            int n=1,flag=1;
-
-
-            while(n<m){
-                n++;
-                res2.moveToNext();        //pointer will point to first row
-                Location startPoint=new Location("locationA");
-                startPoint.setLatitude(res2.getDouble(0));
-                startPoint.setLongitude(res2.getDouble(1));
-
-                Location endPoint=new Location("locationA");
-                endPoint.setLatitude(res3.getDouble(0));
-                endPoint.setLongitude(res3.getDouble(1));
-
-                double distance=startPoint.distanceTo(endPoint);
-                //Log.i("TAG","the distance in metres is "+distance);
-
-                /*long diff;
-                long elapsedDays;
-                try {
-                    Date date1 = df1.parse(res2.getString(2));
-                    Date date2 = df2.parse(res3.getString(2));
-                    long days=1000*60*60*24;
-                    diff = date2.getTime() - date1.getTime();
-                    elapsedDays = diff / days;
-                    if(distance<80){
-                        flag=0;
-                        if(elapsedDays>1){
-                            Log.i("TAG","the difference is  "+elapsedDays);
-
-                            avgLat=res3.getDouble(0);
-                            avgLong=res3.getDouble(1);
-                            FirstTime=res3.getString(2);
-                            buffer.append("LAT: "+avgLat+"\n");
-                            buffer.append("LONG: "+avgLong+"\n");
-                            buffer.append("FIRST_TIME: "+FirstTime+"\n");
-                            String s=LocationFinder(avgLat,avgLong, cont);
-                            buffer.append("Address: "+s+"\n");
-                            arrayList.add(new MyObj(avgLat, avgLong, s, FirstTime));
-                        }
-
-                        break;
-                    }
-
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }*/
-
-
-
-
-                if(distance<80){
-                    flag=0;
-                    break;
-                }
-
-            }
-            if(flag==1){
-                avgLat=res3.getDouble(0);
-                avgLong=res3.getDouble(1);
-                FirstTime=res3.getString(2);
-                buffer.append("LAT: "+avgLat+"\n");
-                buffer.append("LONG: "+avgLong+"\n");
-                buffer.append("FIRST_TIME: "+FirstTime+"\n");
-                String s=LocationFinder(avgLat,avgLong, cont);
-                buffer.append("Address: "+s+"\n");
-                arrayList.add(new MyObj(avgLat, avgLong, s, FirstTime));
-            }
-
+        MyObj temp=null;
+        while(res.moveToNext()){
+            double avgLat=res.getDouble(1);
+            double avgLong=res.getDouble(2);
+            String time=res.getString(3);
+            String s=LocationFinder(avgLat,avgLong, cont);
+            if(temp!=null)
+                temp.setLeaveTime(time);
+            temp = new MyObj(avgLat, avgLong, s, time);
+            arrayList.add(temp);
         }
-        showMessage("Data",buffer.toString(), cont);
-
 
         return arrayList;
     }

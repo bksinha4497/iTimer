@@ -52,10 +52,8 @@ public class GPS_Service extends Service {
                 Intent i=new Intent("location_Update");
                 i.putExtra("coordinates",location.getLatitude()+"  "+location.getLongitude());
                 sendBroadcast(i);
-                DateFormat df = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm:ss ");
-                String dat = df.format(Calendar.getInstance().getTime());
-
-                fetchingDetails(location,dat);
+                String date=MainActivity.getDate();
+                fetchingDetails(location,date);
             }
 
             @Override
@@ -79,7 +77,7 @@ public class GPS_Service extends Service {
 
         };
         locationManager=(LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2000,0,listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,60000,100,listener);
 
     }
 
@@ -92,8 +90,7 @@ public class GPS_Service extends Service {
     }
 
     public void fetchingDetails(Location location,String dat){
-        int places=6;
-        boolean isInserted=myDb.insertData(location.getLatitude(),location.getLongitude() ,dat,places);
+        boolean isInserted=myDb.insertData(location.getLatitude(),location.getLongitude(),dat);
 
         if(isInserted==true){
             Toast.makeText(GPS_Service.this,"Data inserted",Toast.LENGTH_SHORT).show();
