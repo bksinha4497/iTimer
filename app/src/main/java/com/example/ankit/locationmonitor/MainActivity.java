@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         btn_stop=(Button)findViewById(R.id.button2);
         btn_view=(Button)findViewById(R.id.button3);
         btn_delete = (Button)findViewById((R.id.button5));
-        btn_normalize=(Button)findViewById((R.id.button4));
         btn_map=(Button)findViewById((R.id.button6)) ;
         btn_graph=(Button) findViewById(R.id.button7);
 

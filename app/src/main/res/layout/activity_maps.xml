@@ -4,11 +4,11 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="5">
+        android:weightSum="5"
+        android:id="@+id/linearLayout">
 
         <EditText
             android:id="@+id/etLocationEntry"
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/linearLayout"
         tools:context="com.example.ankit.locationmonitor.MapsActivity"
         tools:layout="@android:layout/activity_list_item" />
 

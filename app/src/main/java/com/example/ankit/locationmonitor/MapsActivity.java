@@ -278,8 +278,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String location=et.getText().toString();
         Geocoder gc=new Geocoder(this);
 
-
+        Log.i("TAG", "Reached 1");
         List<Address> list=gc.getFromLocationName(location,1);
+        Log.i("TAG", "Reached 2 : "+list.size());
         Address address=list.get(0);
         //final String locality=address.getLocality();
         final String locality=address.getAddressLine(0);
@@ -287,9 +288,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final double lat=address.getLatitude();
         final double lng=address.getLongitude();
 
+        Log.i("TAG", "Reached 3 : "+lat+" , "+lng);
+
         goToLocationZoom(lat,lng,15);
 
-
+        Log.i("TAG", "Reached 4");
         mark=(Button)findViewById(R.id.btMark);
         mark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -299,7 +302,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
+        Log.i("TAG", "Reached 5");
         clear=(Button)findViewById(id.btClear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
