@@ -99,12 +99,13 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
 
     class MyObj{
         public double lat, longt;
-        public String address, time, time2;
-        public MyObj(double l, double lo, String add, String t){
+        public String address, time, time2,loc1;
+        public MyObj(double l, double lo, String add, String t, String loc){
             lat=l;
             longt=lo;
             address=add;
             time=t;
+            loc1=loc;
         }
         public void setLeaveTime(String time2){
             this.time2=time2;
@@ -139,9 +140,10 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
             double avgLong=res.getDouble(2);
             String time=res.getString(3);
             String s=LocationFinder(avgLat,avgLong, cont);
+            String loc=LocationFinder1(avgLat,avgLong, cont);
             if(temp!=null)
                 temp.setLeaveTime(time);
-            temp = new MyObj(avgLat, avgLong, s, time);
+            temp = new MyObj(avgLat, avgLong, s, time,loc);
             arrayList.add(temp);
         }
 
@@ -150,7 +152,7 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
 
     public String LocationFinder(double avgLat, double avgLong, Context cont) {
 
-        String strAdd = "";
+        String strAdd = "";//Loc="";
         Geocoder gc = new Geocoder(cont, Locale.getDefault());
         try {
             List<Address> addresses= gc.getFromLocation(avgLat,avgLong,1);
@@ -158,16 +160,19 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
                 Address returnedAddress=addresses.get(0);
 
                 StringBuilder strReturnedAddress = new StringBuilder("");
+                //StringBuilder strLOC = new StringBuilder("");
 
                 for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
-                    //strReturnedAddress.append(returnedAddress.getLocality()).append("\n");
+
+                    //strLOC.append(returnedAddress.getLocality()).append("\n");
                     //strReturnedAddress.append(returnedAddress.getPostalCode()).append("\n");
                     //strReturnedAddress.append(returnedAddress.getCountryName());
 
                 }
 
                 strAdd = strReturnedAddress.toString();
+               // Loc=strLOC.toString();
             }
 
             else{
@@ -177,6 +182,50 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
             //Log.i("TAG", "Reached 3 : "+strAdd.toString());
 
             return strAdd.toString();
+
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return strAdd.toString();
+    }
+
+    //new added
+    public String LocationFinder1(double avgLat, double avgLong, Context cont) {
+
+        String strAdd = "";//Loc="";
+        Geocoder gc = new Geocoder(cont, Locale.getDefault());
+        try {
+            List<Address> addresses= gc.getFromLocation(avgLat,avgLong,1);
+            if (addresses!=null){
+                Address returnedAddress=addresses.get(0);
+
+                StringBuilder strReturnedAddress = new StringBuilder("");
+                StringBuilder strLOC = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getSubLocality()).append("\n");
+
+                   // strLOC.append(returnedAddress.getLocality()).append("\n");
+                    //strReturnedAddress.append(returnedAddress.getPostalCode()).append("\n");
+                    //strReturnedAddress.append(returnedAddress.getCountryName());
+
+                }
+
+                strAdd = strReturnedAddress.toString();
+                //Loc=strLOC.toString();
+            }
+
+            else{
+                Log.i("TAG", "No Address returned!");
+            }
+
+            //Log.i("TAG", "Reached 3 : "+strAdd.toString());
+
+            return strAdd.toString();
+
         }
 
         catch (IOException e) {

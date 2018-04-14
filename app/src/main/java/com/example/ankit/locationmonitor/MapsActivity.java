@@ -44,7 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static GoogleMap mMap;
     public final static int MY_PERMISSION_FINE_LOCATION = 101;
     public Button mark, clear;
-    public Button btn_date;
+    public Button btn_date,bt_sat;
     int year_x,month_x,day_x;
     static final int Dialog_id=0;
     ZoomControls zoom;
@@ -112,6 +112,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 mMap.animateCamera(CameraUpdateFactory.zoomIn());
 
+            }
+        });
+        bt_sat=(Button)findViewById(id.btSatellite);
+        bt_sat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
             }
         });
 

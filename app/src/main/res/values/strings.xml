@@ -19,5 +19,8 @@
     <string name="todo">TODO</string>
     <string name="textview1">textview</string>
     <string name="textview2">textview</string>
+    <string name="title_activity_graph">GraphActivity</string>
+    <string name="Date">Date</string>
+    <string name="Name">iTimer</string>
 
 </resources>

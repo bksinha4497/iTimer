@@ -25,10 +25,11 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper myDb;
     //GPS_Service gs;
-    public Button btn_start,btn_stop,btn_view,btn_delete,btn_normalize,btn_map;
+    public Button btn_start,btn_stop,btn_view,btn_delete,btn_normalize,btn_map,btn_graph;
     public TextView textView1;
     public BroadcastReceiver broadcastReceiver;
     public EditText editid  ;
+    //public Button btn_grph;
 
 
     @Override
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         btn_delete = (Button)findViewById((R.id.button5));
         btn_normalize=(Button)findViewById((R.id.button4));
         btn_map=(Button)findViewById((R.id.button6)) ;
+        btn_graph=(Button) findViewById(R.id.button7);
 
         textView1=(TextView)findViewById(R.id.textView);
         editid=(EditText)findViewById((R.id.editTextId));
@@ -76,20 +78,33 @@ public class MainActivity extends AppCompatActivity {
             enable_buttons();
 
 
-        normalize();
+        //normalize();
         viewAll();
         deleteAll();
         showMap();
+        graph();
+
     }
 
-    public void normalize(){
+    public void graph()
+    {
+        btn_graph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent g = new Intent(MainActivity.this, GraphActivity.class);
+                startActivity(g);
+            }});
+
+    }
+
+    /* public void normalize(){
         btn_normalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myDb.normalizeData(MainActivity.this, null);
             }
         });
-    }
+    } */
 
     public void deleteAll() {
         btn_delete.setOnClickListener(new View.OnClickListener() {
