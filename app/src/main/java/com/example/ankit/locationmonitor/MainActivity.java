@@ -1,15 +1,22 @@
 package com.example.ankit.locationmonitor;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,12 +31,12 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper myDb;
-    //GPS_Service gs;
-    public Button btn_start,btn_stop,btn_view,btn_delete,btn_normalize,btn_map,btn_graph;
+    public Button btn_start,btn_stop,btn_view,btn_delete,btn_map,btn_graph;
     public TextView textView1;
     public BroadcastReceiver broadcastReceiver;
     public EditText editid  ;
-    //public Button btn_grph;
+    LocationManager locationManager;
+
 
 
     @Override
@@ -61,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         myDb=new DatabaseHelper(this);
-        //gs=new GPS_Service(this);
+
 
 
         btn_start=(Button)findViewById(R.id.button1);
@@ -77,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             enable_buttons();
 
 
-        //normalize();
+
         viewAll();
         deleteAll();
         showMap();
@@ -96,14 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /* public void normalize(){
-        btn_normalize.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myDb.normalizeData(MainActivity.this, null);
-            }
-        });
-    } */
 
     public void deleteAll() {
         btn_delete.setOnClickListener(new View.OnClickListener() {
@@ -143,7 +142,31 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(getApplicationContext(),GPS_Service.class);
-                startService(i);
+                //new
+                locationManager=(LocationManager)MainActivity.this.getSystemService(LOCATION_SERVICE);
+                boolean isGpsON;
+                isGpsON =locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if(isGpsON) startService(i);
+                else  {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Yout GPS seems to be disabled, do you want to enable it?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                   // Toast.makeText(MainActivity.this,"GPS is OFF",Toast.LENGTH_SHORT).show();
+
+                }
+
             }
         });
 

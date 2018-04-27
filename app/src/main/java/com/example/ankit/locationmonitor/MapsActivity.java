@@ -1,11 +1,17 @@
 package com.example.ankit.locationmonitor;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -274,46 +280,76 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker marker;
 
     public void geoLocate(View view) throws IOException {
-        EditText et=(EditText)findViewById(R.id.etLocationEntry);
-        String location=et.getText().toString();
-        Geocoder gc=new Geocoder(this);
+        //new
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(MapsActivity.CONNECTIVITY_SERVICE);
 
-        Log.i("TAG", "Reached 1");
-        List<Address> list=gc.getFromLocationName(location,1);
-        Log.i("TAG", "Reached 2 : "+list.size());
-        Address address=list.get(0);
-        //final String locality=address.getLocality();
-        final String locality=address.getAddressLine(0);
-        Toast.makeText(this,locality, Toast.LENGTH_LONG).show();
-        final double lat=address.getLatitude();
-        final double lng=address.getLongitude();
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnected();
+        if(isConnected) {
+            //Log.d("Network", "Connected");
+            EditText et=(EditText)findViewById(R.id.etLocationEntry);
+            String location=et.getText().toString();
+            Geocoder gc=new Geocoder(this);
 
-        Log.i("TAG", "Reached 3 : "+lat+" , "+lng);
+            //Log.i("TAG", "Reached 1");
+            List<Address> list=gc.getFromLocationName(location,1);
+            // Log.i("TAG", "Reached 2 : "+list.size());
+            Address address=list.get(0);
+            //final String locality=address.getLocality();
+            final String locality=address.getAddressLine(0);
+            Toast.makeText(this,locality, Toast.LENGTH_LONG).show();
+            final double lat=address.getLatitude();
+            final double lng=address.getLongitude();
 
-        goToLocationZoom(lat,lng,15);
+            //Log.i("TAG", "Reached 3 : "+lat+" , "+lng);
 
-        Log.i("TAG", "Reached 4");
-        mark=(Button)findViewById(R.id.btMark);
-        mark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setMarkers(locality,lat,lng);
+            goToLocationZoom(lat,lng,15);
 
-            }
-        });
+            // Log.i("TAG", "Reached 4");
+            mark=(Button)findViewById(R.id.btMark);
+            mark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setMarkers(locality,lat,lng);
 
-        Log.i("TAG", "Reached 5");
-        clear=(Button)findViewById(id.btClear);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(marker!=null){
-                    marker.remove();
                 }
-            }
-        });
+            });
 
+            // Log.i("TAG", "Reached 5");
+            clear=(Button)findViewById(id.btClear);
+            clear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(marker!=null){
+                        marker.remove();
+                    }
+                }
+            });
+        }
+        else {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+            builder.setMessage("Yout Internet seems to be disabled, do you want to enable it?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+
+        }
     }
+
+
+
 
     Circle circle;
     public void setMarkers(String locality,double lat,double lng){
