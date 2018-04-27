@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -120,13 +121,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
         bt_sat=(Button)findViewById(id.btSatellite);
         bt_sat.setOnClickListener(new View.OnClickListener() {
+            private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds //new
+
+            long lastClickTime = 0;  //new
             @Override
             public void onClick(View view) {
-                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                //new
+                long clickTime = System.currentTimeMillis();
+                if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    lastClickTime = 0;
+                } else {
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                }
+                lastClickTime = clickTime;
             }
-        });
+                //end
+               // mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
+
+            });
+
 
 
         final Calendar cal=Calendar.getInstance();
