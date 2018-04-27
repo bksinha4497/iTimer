@@ -254,7 +254,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for (int i = 0; i < myObjs.size(); i++) {
             locations = new LatLng(myObjs.get(i).lat, myObjs.get(i).longt);
-            mMap.addMarker(new MarkerOptions().position(locations).title(myObjs.get(i).address).snippet(myObjs.get(i).getTimeWithTotalTime()));
+            MarkerOptions mMarker = new MarkerOptions().position(locations).title(myObjs.get(i).address).snippet(myObjs.get(i).getTimeWithTotalTime());
+            mMap.addMarker(mMarker);
         }
 
 
