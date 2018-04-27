@@ -20,8 +20,6 @@
 
         <Button
             android:id="@+id/btSearch"
-            android:background="@drawable/map_button_style"
-            android:textColor="#FFFF"
             android:onClick="geoLocate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,8 +44,6 @@
 
     <Button
         android:id="@+id/btMark"
-        android:background="@drawable/map_button_style"
-        android:textColor="#FFFF"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_width="wrap_content"
@@ -58,8 +54,6 @@
 
     <Button
         android:id="@+id/btSatellite"
-        android:background="@drawable/map_button_style"
-        android:textColor="#FFFF"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_width="wrap_content"
@@ -70,8 +64,6 @@
 
     <Button
         android:id="@+id/btClear"
-        android:background="@drawable/map_button_style"
-        android:textColor="#FFFF"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_width="wrap_content"
@@ -89,8 +81,6 @@
 
     <Button
         android:id="@+id/bt_date"
-        android:background="@drawable/map_button_style"
-        android:textColor="#FFFF"
         android:layout_marginRight="2dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

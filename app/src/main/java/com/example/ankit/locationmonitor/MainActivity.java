@@ -1,6 +1,7 @@
 package com.example.ankit.locationmonitor;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,7 +30,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     DatabaseHelper myDb;
     public Button btn_start,btn_stop,btn_view,btn_delete,btn_map,btn_graph;
     public TextView textView1;

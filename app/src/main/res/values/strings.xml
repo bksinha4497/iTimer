@@ -21,6 +21,6 @@
     <string name="textview2">textview</string>
     <string name="title_activity_graph">GraphActivity</string>
     <string name="Date">Date</string>
-    <string name="Name">iTimer</string>
+    <string name="Name">ITimer</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.ankit.locationmonitor;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
@@ -38,7 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class GraphActivity extends AppCompatActivity {
+public class GraphActivity extends Activity {
 
    // BarChart barChart;
 

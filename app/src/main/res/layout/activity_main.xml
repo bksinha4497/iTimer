@@ -4,101 +4,103 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_style"
-    android:orientation="vertical"
+    android:layout_margin="10dp"
     tools:context="com.example.ankit.locationmonitor.MainActivity">
 
-    <Button
-        android:id="@+id/button1"
-        android:background="@drawable/button_style"
-        android:textColor="#FFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
-        android:layout_alignStart="@+id/button2"
-        android:layout_marginBottom="40dp"
-        android:text="@string/start" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:text="@string/coordinates"
+
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            </ScrollView>
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/start" />
 
 
-
-    <Button
-        android:id="@+id/button2"
-        android:background="@drawable/button_style"
-        android:textColor="#FFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button5"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="51dp"
-        android:text="@string/stop" />
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="31dp"
+                android:text="@string/stop" />
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_centerInParent="true"
-        android:layout_width="1200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:scrollbars="vertical"
-        android:text="@string/coordinates"
-        android:textColor="#4E342E"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button3"
-        android:background="@drawable/button_style"
-        android:textColor="#FFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button7"
-        android:layout_alignBottom="@+id/button7"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="14dp"
-        android:text="@string/view" />
+                <EditText
+                    android:id="@+id/editTextId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="@string/id"
+                    android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/editTextId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/button2"
-        android:ems="10"
-        android:hint="@string/id"
-        android:inputType="textPersonName" />
+                <Button
+                    android:id="@+id/button5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/delete" />
 
-    <Button
-        android:id="@+id/button5"
-        android:background="@drawable/button_style"
-        android:textColor="#FFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button6"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="16dp"
-        android:text="@string/delete" />
+            </LinearLayout>
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button7"
-        android:layout_alignBottom="@+id/button7"
-        android:layout_alignStart="@+id/button5"
-        android:background="@drawable/button_style"
-        android:text="@string/show_on_map"
-        android:textColor="#FFFF" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/button2"
-        android:layout_marginBottom="28dp"
-        android:background="@drawable/button_style"
-        android:text="Pie Chart"
-        android:textColor="#FFFF" />
+                <Button
+                    android:id="@+id/button3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/view" />
 
 
+                <Button
+                    android:id="@+id/button6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/show_on_map" />
+
+                <Button
+                    android:id="@+id/button7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pie Chart" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
