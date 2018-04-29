@@ -7,9 +7,8 @@ you only need to start the application and also you can view the locations on ma
 <h3>So the map shows all your locations with time stamps of a single day based on your date selection .
 You can also view the sub localities in the form for pie graph.</h3>
 
-![img](https://i.imgur.com/HVxIdBF.jpg)
-![img](https://i.imgur.com/LVDT7rv.jpg)
-![img](https://i.imgur.com/whujSEA.jpg)
-![img](https://i.imgur.com/YaAL8Us.jpg)
 
 ![img](https://i.imgur.com/SfQU5Fo.jpg)
+![img](https://i.imgur.com/2uFbEaH.jpg)
+![img](https://i.imgur.com/x1a4RX4.jpg)
+![img](https://i.imgur.com/ESllicw.jpg)
