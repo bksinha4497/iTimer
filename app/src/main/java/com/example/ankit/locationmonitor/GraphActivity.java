@@ -108,7 +108,7 @@ public class GraphActivity extends Activity {
 
         pieChart.setDragDecelerationFrictionCoef(0.99f);
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(Color.WHITE);
+        pieChart.setHoleColor(Color.TRANSPARENT);
         pieChart.setTransparentCircleRadius(61f);
 
 
@@ -118,7 +118,7 @@ public class GraphActivity extends Activity {
         PieDataSet dataSet=new PieDataSet(yValues,"Localities");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
-        dataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
 
         PieData data=new PieData(dataSet);
         data.setValueTextSize(10f);
