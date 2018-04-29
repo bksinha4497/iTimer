@@ -11,3 +11,5 @@ You can also view the sub localities in the form for pie graph.</h3>
 ![img](https://i.imgur.com/LVDT7rv.jpg)
 ![img](https://i.imgur.com/whujSEA.jpg)
 ![img](https://i.imgur.com/YaAL8Us.jpg)
+
+![img](https://i.imgur.com/SfQU5Fo.jpg)
