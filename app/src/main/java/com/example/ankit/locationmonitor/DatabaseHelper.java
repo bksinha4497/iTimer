@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Date;
 
-/**
- * Created by ankit on 10-02-2018.
- */
+
 
 public class DatabaseHelper extends  SQLiteOpenHelper{
     public static final String DATABASE_NAME="gpsdata.db";

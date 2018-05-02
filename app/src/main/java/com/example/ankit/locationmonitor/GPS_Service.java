@@ -23,9 +23,6 @@ import java.util.*;
 
 
 
-/**
- * Created by ankit on 10-02-2018.
- */
 
 public class GPS_Service extends Service {
     DatabaseHelper myDb;
