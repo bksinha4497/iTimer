@@ -13,9 +13,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -36,8 +38,12 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 
 public class GraphActivity extends Activity {
 
@@ -64,7 +70,7 @@ public class GraphActivity extends Activity {
     protected Dialog onCreateDialog(int id){
         if(id==Dialog_id)
             return new DatePickerDialog(this,dpickerListner ,year_x,month_x,day_x);
-        return null;
+            return null;
 
     }
 
@@ -74,32 +80,99 @@ public class GraphActivity extends Activity {
             year_x = year;
             month_x = monthOfYear + 1;
             day_x = dayOfMonth;
-            setDatedMarker();
+            try {
+                setDatedMarker();
+            } catch (ParseException e) {
+
+                Log.d("d1003", "onDateSet: catch");
+            }
         }
     };
-    private void setDatedMarker(){
+    private void setDatedMarker() throws ParseException {
         String date = String.format("%02d", day_x)+"."+String.format("%02d", month_x)+"."+String.format("%04d", year_x);
         Toast.makeText(GraphActivity.this,date,Toast.LENGTH_SHORT).show();
         addGraphs(date);
 
     }
-    private void addGraphs(String date ){
+    private void addGraphs(String date ) throws ParseException {
 
         DatabaseHelper db9 = new DatabaseHelper(this);
         //String date1="";
         ArrayList<DatabaseHelper.MyObj> myObjs = db9.normalizeData(this, date);
-
+        ArrayList <String> loca = new ArrayList<String>();
+        ArrayList <Integer> spentTime = new ArrayList<Integer>();
         LatLng locations = null;
 
-        int j=20;
         ArrayList<PieEntry> yValues=new ArrayList<>();
+
         for (int i = 0; i < myObjs.size(); i++) {
-            String a1=myObjs.get(i).loc1;
+            String loc=myObjs.get(i).loc1;
+            String t1=myObjs.get(i).getTimeWithTotalTime().toString();
+            Log.d("d1006", "addGraphs: "+t1);
+            String time[]=t1.split("  to ");
+            Log.d("d1007", "addGraphs: "+ Arrays.toString(time));
+            String time1=time[0];
+            String time2="0";
+            if(time.length==2) {
+                time2 = time[1];
+            }
+            else{
+                time2=time[0];
+            }
+            String time1_1=time1.substring(14,22);
+            String time1_2=time2.substring(14,22);
+            int day1=Integer.parseInt(time1.substring(0,2));
+            int day2=Integer.parseInt(time2.substring(0,2));
+            int hr1=Integer.parseInt(time1.substring(14,16));
+            int min1=Integer.parseInt(time1.substring(17,19));
+            int sec1=Integer.parseInt(time1.substring(20,22));
+            int hr2=Integer.parseInt(time2.substring(14,16));
+            int min2=Integer.parseInt(time2.substring(17,19));
+            int sec2=Integer.parseInt(time2.substring(20,22));
+            int timeSpent=60*60*(hr2-hr1)+60*(min2-min1)+(sec2-sec1);
+            timeSpent= - timeSpent;
 
+            SimpleDateFormat formatter6=new SimpleDateFormat("HH:mm:ss");
+            Date date1=formatter6.parse(time1_1);
+            Date date2=formatter6.parse(time1_2);
+            long diff = Math.abs(date2.getTime() - date1.getTime());
+            int diffDays = (int)(diff / ( 60 * 1000));
+            if(loca.indexOf(loc)==-1){
+                spentTime.add(diffDays);
+                loca.add(loc);
+            }
+            else {
+                Log.d("d1001", "addGraphs: "+loca.toString()+spentTime.toString());
+                int index=loca.indexOf(loc);
+                int timespent=spentTime.get(index);
+                diffDays+=timespent;
+                spentTime.set(index,diffDays);
 
-            yValues.add(new PieEntry(j,a1));
+            }
+            Log.d("d1004", "addGraphs: "+time1_1);
+            Log.d("d1004", "addGraphs: "+time1_2);
+            Log.d("d1005", "addGraphs: "+date1.toString());
+            Log.d("d1005", "addGraphs: "+date2.toString());
 
+            Log.d("d1002", "addGraphs: "+Long.toString(diffDays));
+            /*
+            Log.d("tag", "addGraphs: "+timeSpent);
+            yValues.add(new PieEntry(timeSpent,loc));*/
         }
+        TextView spenttimetext =(TextView) findViewById(R.id.timespent);
+        int i;
+        double sum = 0;
+        for(i = 0; i < spentTime.size(); i++)
+            sum += spentTime.get(i);
+        String text=Double.toString(sum);
+        spenttimetext.setText("TOTAL TIME SPENT : "+text+" minutes");
+        for(i=0;i<spentTime.size();i++) {
+            String loc = loca.get(i);
+            int timeSpent =spentTime.get(i);
+            Log.d("tag", "addGraphs: "+timeSpent);
+            yValues.add(new PieEntry(timeSpent,loc));
+        }
+
         // graph start
         pieChart= (PieChart) findViewById(R.id.piechart);
         pieChart.setUsePercentValues(true);
@@ -144,6 +217,7 @@ public class GraphActivity extends Activity {
 
 
     }
+
 
 
 }

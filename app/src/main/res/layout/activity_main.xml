@@ -59,7 +59,9 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="@string/id"
-                    android:inputType="textPersonName" />
+
+                    android:inputType="textPersonName"
+                    />
 
                 <Button
                     android:id="@+id/button5"

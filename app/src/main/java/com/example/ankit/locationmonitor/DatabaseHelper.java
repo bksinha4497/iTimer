@@ -114,6 +114,7 @@ public class DatabaseHelper extends  SQLiteOpenHelper{
             if(time2!=null)
                 return time +" to "+time2;
             else
+
                 return time;
         }
     }

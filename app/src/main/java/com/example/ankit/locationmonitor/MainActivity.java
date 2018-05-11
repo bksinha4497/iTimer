@@ -71,6 +71,14 @@ public class MainActivity extends Activity {
         myDb=new DatabaseHelper(this);
 
 
+        //boolean isInserted=myDb.insertData(13.0145937,77.55140469999992,"11.05.2018 at 20:00:25");
+        //boolean isInserted=myDb.insertData(12.9591722,77.69741899999997,"11.05.2018 at 22:15:12");
+        //boolean isInserted=myDb.insertData(12.9291722,77.67741899999997,"11.05.2018 at 21:00:12");
+        //isInserted=myDb.insertData(12.9260308,77.6762463,"12.05.2018 at 08:15:12");
+        //isInserted=myDb.insertData(12.9388787,77.74120470000003,"12.05.2018 at 09:15:12");
+        //isInserted=myDb.insertData(13.0422567,77.61355230000004,"12.05.2018 at 12:30:12");
+
+
 
         btn_start=(Button)findViewById(R.id.button1);
         btn_stop=(Button)findViewById(R.id.button2);

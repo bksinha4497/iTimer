@@ -22,5 +22,6 @@
     <string name="title_activity_graph">GraphActivity</string>
     <string name="Date">Date</string>
     <string name="Name">ITimer</string>
+    <string name="date">DATE</string>
 
 </resources>
